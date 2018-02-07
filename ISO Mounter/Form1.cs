@@ -137,6 +137,10 @@ namespace ISO_Mounter
                 //MessageBox.Show(AutoUpdate);
                 if (AutoUpdate.Contains("true"))
                 {
+                    if (File.Exists(Application.StartupPath + "\\" + "latestversion.txt"))
+                    {
+                        File.Delete(Application.StartupPath + "\\" + "latestversion.txt");
+                    }
                   //  MessageBox.Show("updatesection");
                     System.Net.NetworkInformation.Ping TestServer = new System.Net.NetworkInformation.Ping();
                     if (TestServer.Send("89.203.4.93", 300).Status == System.Net.NetworkInformation.IPStatus.Success)

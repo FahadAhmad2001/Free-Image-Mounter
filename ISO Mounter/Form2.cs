@@ -128,6 +128,10 @@ namespace ISO_Mounter
                 CurrentVersion = output1[0];
                 CurrentVDate = output1[1];
                 //AutoUpdate = output1[2];
+                if (File.Exists(Application.StartupPath + "\\" + "latestversion.txt"))
+                {
+                    File.Delete(Application.StartupPath + "\\" + "latestversion.txt");
+                }
                 System.Net.NetworkInformation.Ping TestServer = new System.Net.NetworkInformation.Ping();
                     if (TestServer.Send("89.203.4.93", 300).Status == System.Net.NetworkInformation.IPStatus.Success)
                     {
