@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Management.Automation;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.RegularExpressions;
 //using System.Runtime.
 
 namespace ISO_Mounter
@@ -22,6 +23,9 @@ namespace ISO_Mounter
         public StreamWriter editBAT;
         public string output1;
         public string error1;
+        public String AutoUpdate;
+        public String CurrentVersion;
+        public String CurrentVDate;
         //public int unmountresponse;
         //public Process MountImage;
 
@@ -112,6 +116,80 @@ namespace ISO_Mounter
 
             }
             //MessageBox.Show(dataGridView1.CurrentCell.Value.ToString());
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (File.Exists(Application.StartupPath + "\\" + "version.txt"))
+            {
+                StreamReader CheckVersion;
+                CheckVersion = new StreamReader(Application.StartupPath + "\\" + "version.txt");
+                String FullFile = CheckVersion.ReadToEnd();
+                CheckVersion.Close();
+                
+                String[] output1;
+                Char Splitter = ':';
+                output1 = FullFile.Split(Splitter);
+                CurrentVersion = output1[0];
+                CurrentVDate = output1[1];
+                AutoUpdate = output1[2];
+                AutoUpdate.TrimEnd('\r', '\n');
+                //MessageBox.Show(AutoUpdate);
+                if (AutoUpdate.Contains("true"))
+                {
+                  //  MessageBox.Show("updatesection");
+                    System.Net.NetworkInformation.Ping TestServer = new System.Net.NetworkInformation.Ping();
+                    if (TestServer.Send("89.203.4.93", 300).Status == System.Net.NetworkInformation.IPStatus.Success)
+                    {
+                    //    MessageBox.Show("works");
+                        System.Net.WebClient GetLatestInfo = new System.Net.WebClient();
+                        GetLatestInfo.DownloadFile("ftp://89.203.4.93/downloads/isomount/latestversion.txt", "latestversion.txt");
+                        CheckVersion = new StreamReader(Application.StartupPath + "\\" + "latestversion.txt");
+                        String LatestFile = CheckVersion.ReadToEnd();
+                        CheckVersion.Close();
+                        output1 = LatestFile.Split(Splitter);
+                        String LatestVersion = output1[0];
+                        if (LatestVersion == CurrentVersion)
+                        {
+
+                        }
+                        else
+                        {
+                            DialogResult UpdateResponse = MessageBox.Show("New version, " + output1[0] + ", from " + output1[1] + " found. Update?", "Update available", MessageBoxButtons.YesNoCancel);
+                            if (UpdateResponse == DialogResult.Yes)
+                            {
+                                Form2 downloadform = new Form2();
+                                downloadform.UpdateProgram();
+                                downloadform.ShowDialog();
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("cannot contact update server");
+                    }
+
+                }
+                else
+                {
+                    button3.Text = "Updates disabled";
+                }
+
+            
+                }
+            else
+            {
+                MessageBox.Show("Some files cannot be found. The program may run without them however cannot be updated");
+                DialogResult UpdateResponse = MessageBox.Show("Would you like to download the newest version from online?", "Download latest version", MessageBoxButtons.YesNo);
+
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Form2 updateform = new Form2();
+            updateform.ShowDialog();
         }
     }
 }
