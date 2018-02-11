@@ -150,6 +150,10 @@ namespace ISO_Mounter
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (File.Exists(Application.StartupPath + "\\" + "log.txt"))
+            {
+                File.Delete(Application.StartupPath + "\\" + "log.txt");
+            }
             richTextBox1.AppendText("------------Free Image Mounter------------");
             Logs = new StringBuilder();
             Logs.Append("------------Free Image Mounter------------");
