@@ -54,97 +54,14 @@ namespace ISO_Mounter
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click1(object sender, EventArgs e)
         {
-            command1 = "Mount-DiskImage -ImagePath " + "'" + FileLocation + "'";
-            //using (PowerShell PowerShellInstance = PowerShell.Create())
-            //{
-            //  PowerShellInstance.AddCommand("Mount-DiskImage");
-            //PowerShellInstance.AddParameter();
-            //PowerShellInstance.AddArgument(" -ImagePath " + "'" + FileLocation + "'");
-            // PowerShellInstance.Invoke();
-
-            //}
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Writing commands to PowerShell script");
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Writing commands to PowerShell script");
-            editBAT = new StreamWriter(Application.StartupPath + "\\" + "MountISO.ps1");
-            editBAT.WriteLine(command1);
-            editBAT.Close();
-            command2 = "powershell.exe -command " + command1;
-            //MessageBox.Show(command2);
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Generating mount process");
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Generating mount process");
-            System.Diagnostics.Process MountImage = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo MountImageInfo = new System.Diagnostics.ProcessStartInfo("cmd.exe");
-            MountImageInfo.CreateNoWindow = true;
-            MountImageInfo.UseShellExecute = false;
-            MountImageInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            MountImageInfo.Arguments = "/c " + command2;
-            //MountImageInfo.RedirectStandardError = true;
-            //MountImageInfo.RedirectStandardOutput = true;
-            MountImage.StartInfo = MountImageInfo;
-            label3.Text = "Status: Mounting";
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Starting mount process");
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Starting mount process");
-            MountImage.Start();
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Mount process successfully started with ID " + MountImage.Id.ToString());
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Mount process successfully");
-            //output1 = MountImage.StandardOutput.ReadToEnd();
-            //error1 = MountImage.StandardError.ReadToEnd();
-            //MessageBox.Show(output1);
-            //MessageBox.Show(error1);
-            MountImage.WaitForExit();
-            MountImage.Close();
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Mount process completed");
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Mount process completed");
-            dataGridView1.Rows.Add(FileLocation);  
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Image path added to table");
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Image path added to table");
-            label3.Text = "Status:";
-            MessageBox.Show("Successfully mounted");
-            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Image mounted");
-            Logs.Append(Environment.NewLine + DateTime.Now + "       Image mounted");
+            
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            DialogResult unmountresponse  = MessageBox.Show("Do you really want to unmount this image","Confirm dismount",MessageBoxButtons.YesNo);
-            if( unmountresponse == DialogResult.Yes){
-                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Generating commands");
-                Logs.Append(Environment.NewLine + DateTime.Now + "       Generating commands");
-                int CellIndex = dataGridView1.CurrentCell.RowIndex;
-                String removeFile = dataGridView1.CurrentCell.Value.ToString();
-                String command3 = "Dismount-DiskImage -ImagePath " + "'" + removeFile + "'";
-                String command4 = "/c powershell.exe -command " + command3;
-                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Generating unmount process");
-                Logs.Append(Environment.NewLine + DateTime.Now + "       Generating unmount process");
-                System.Diagnostics.Process UnMountImage = new System.Diagnostics.Process();
-                System.Diagnostics.ProcessStartInfo UnMountImageInfo = new System.Diagnostics.ProcessStartInfo("cmd.exe");
-                UnMountImageInfo.CreateNoWindow = true;
-                UnMountImageInfo.UseShellExecute = false;
-                UnMountImageInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                UnMountImageInfo.Arguments = command4;
-                UnMountImage.StartInfo = UnMountImageInfo;
-                label3.Text = "Status: Unmounting";
-                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Starting unmount process");
-                Logs.Append(Environment.NewLine + DateTime.Now + "       Starting unmount process");
-                UnMountImage.Start();
-                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Unmount process started successfully with ID " + UnMountImage.Id.ToString());
-                Logs.Append(Environment.NewLine + DateTime.Now + "       Unmount process started successfully");
-                UnMountImage.WaitForExit();
-                UnMountImage.Close();
-                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Unmount process completed");
-                Logs.Append(Environment.NewLine + DateTime.Now + "       Unmount process completed");
-                dataGridView1.Rows.RemoveAt(CellIndex);
-                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Image path removed from table");
-                Logs.Append(Environment.NewLine + DateTime.Now + "       Image path removed from table");
-                label3.Text = "Status:";
-                MessageBox.Show("Successfully unmounted");
-            }
-            else
-            {
-
-            }
+            
             //MessageBox.Show(dataGridView1.CurrentCell.Value.ToString());
         }
 
@@ -176,9 +93,14 @@ namespace ISO_Mounter
                 LogStatus = output1[3];
                 if (LogStatus.Contains("true"))
                 {
+                    label5.Text = "Logging is currently enabled. The tickbox is to change logging status, regardless of whether it is ticked or not";
                     richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Starting to write to log file");
                     Logs.Append(Environment.NewLine + DateTime.Now + "       Starting to write to log file");
                     timer1.Start();
+                }
+                else
+                {
+                    label5.Text = "Logging is currently disabled. The tickbox is to change logging status, regardless of whether it is ticked or not";
                 }
                 AutoUpdate.TrimEnd('\r', '\n');
                 richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Free Image Mounter v" + CurrentVersion + ", from " + CurrentVDate);
@@ -339,7 +261,108 @@ namespace ISO_Mounter
 
         private void button2_Click_1(object sender, EventArgs e)
         {
+            command1 = "Mount-DiskImage -ImagePath " + "'" + FileLocation + "'";
+            //using (PowerShell PowerShellInstance = PowerShell.Create())
+            //{
+            //  PowerShellInstance.AddCommand("Mount-DiskImage");
+            //PowerShellInstance.AddParameter();
+            //PowerShellInstance.AddArgument(" -ImagePath " + "'" + FileLocation + "'");
+            // PowerShellInstance.Invoke();
 
+            //}
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Writing commands to PowerShell script");
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Writing commands to PowerShell script");
+            editBAT = new StreamWriter(Application.StartupPath + "\\" + "MountISO.ps1");
+            editBAT.WriteLine(command1);
+            editBAT.Close();
+            command2 = "powershell.exe -command " + command1;
+            //MessageBox.Show(command2);
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Generating mount process");
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Generating mount process");
+            System.Diagnostics.Process MountImage = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo MountImageInfo = new System.Diagnostics.ProcessStartInfo("cmd.exe");
+            MountImageInfo.CreateNoWindow = true;
+            MountImageInfo.UseShellExecute = false;
+            MountImageInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            MountImageInfo.Arguments = "/c " + command2;
+            //MountImageInfo.RedirectStandardError = true;
+            //MountImageInfo.RedirectStandardOutput = true;
+            MountImage.StartInfo = MountImageInfo;
+            label3.Text = "Status: Mounting";
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Starting mount process");
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Starting mount process");
+            MountImage.Start();
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Mount process successfully started with ID " + MountImage.Id.ToString());
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Mount process successfully");
+            //output1 = MountImage.StandardOutput.ReadToEnd();
+            //error1 = MountImage.StandardError.ReadToEnd();
+            //MessageBox.Show(output1);
+            //MessageBox.Show(error1);
+            MountImage.WaitForExit();
+            MountImage.Close();
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Mount process completed");
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Mount process completed");
+            dataGridView1.Rows.Add(FileLocation);
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Image path added to table");
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Image path added to table");
+            label3.Text = "Status:";
+            MessageBox.Show("Successfully mounted");
+            richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Image mounted");
+            Logs.Append(Environment.NewLine + DateTime.Now + "       Image mounted");
+        }
+
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+            DialogResult unmountresponse = MessageBox.Show("Do you really want to unmount this image", "Confirm dismount", MessageBoxButtons.YesNo);
+            if (unmountresponse == DialogResult.Yes)
+            {
+                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Generating commands");
+                Logs.Append(Environment.NewLine + DateTime.Now + "       Generating commands");
+                int CellIndex = dataGridView1.CurrentCell.RowIndex;
+                String removeFile = dataGridView1.CurrentCell.Value.ToString();
+                String command3 = "Dismount-DiskImage -ImagePath " + "'" + removeFile + "'";
+                String command4 = "/c powershell.exe -command " + command3;
+                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Generating unmount process");
+                Logs.Append(Environment.NewLine + DateTime.Now + "       Generating unmount process");
+                System.Diagnostics.Process UnMountImage = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo UnMountImageInfo = new System.Diagnostics.ProcessStartInfo("cmd.exe");
+                UnMountImageInfo.CreateNoWindow = true;
+                UnMountImageInfo.UseShellExecute = false;
+                UnMountImageInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                UnMountImageInfo.Arguments = command4;
+                UnMountImage.StartInfo = UnMountImageInfo;
+                label3.Text = "Status: Unmounting";
+                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Starting unmount process");
+                Logs.Append(Environment.NewLine + DateTime.Now + "       Starting unmount process");
+                UnMountImage.Start();
+                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Unmount process started successfully with ID " + UnMountImage.Id.ToString());
+                Logs.Append(Environment.NewLine + DateTime.Now + "       Unmount process started successfully");
+                UnMountImage.WaitForExit();
+                UnMountImage.Close();
+                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Unmount process completed");
+                Logs.Append(Environment.NewLine + DateTime.Now + "       Unmount process completed");
+                dataGridView1.Rows.RemoveAt(CellIndex);
+                richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Image path removed from table");
+                Logs.Append(Environment.NewLine + DateTime.Now + "       Image path removed from table");
+                label3.Text = "Status:";
+                MessageBox.Show("Successfully unmounted");
+            }
+            else
+            {
+
+            }
+        }
+        private void Form1_Closing(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (LogStatus.Contains("true"))
+            {
+                File.AppendAllText(Application.StartupPath + "\\" + "log.txt", Logs.ToString());
+            }
         }
     }
 }
