@@ -364,5 +364,10 @@ namespace ISO_Mounter
                 File.AppendAllText(Application.StartupPath + "\\" + "log.txt", Logs.ToString());
             }
         }
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
