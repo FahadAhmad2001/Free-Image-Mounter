@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISO Mounter", "ISO Mounter\ISO Mounter.csproj", "{3332EED7-A2B5-44E0-8212-EBEB57CE5C7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupMounter", "StartupMounter\StartupMounter.csproj", "{1A5835EA-B879-4DB1-A1D7-FEF29EB58AB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3332EED7-A2B5-44E0-8212-EBEB57CE5C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3332EED7-A2B5-44E0-8212-EBEB57CE5C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3332EED7-A2B5-44E0-8212-EBEB57CE5C7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A5835EA-B879-4DB1-A1D7-FEF29EB58AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A5835EA-B879-4DB1-A1D7-FEF29EB58AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A5835EA-B879-4DB1-A1D7-FEF29EB58AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A5835EA-B879-4DB1-A1D7-FEF29EB58AB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

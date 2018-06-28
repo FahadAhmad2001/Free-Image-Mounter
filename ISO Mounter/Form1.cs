@@ -11,6 +11,7 @@ using System.Management.Automation;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 //using System.Runtime.
 
 namespace ISO_Mounter
@@ -31,6 +32,7 @@ namespace ISO_Mounter
         public String CurrentVDate;
         public static StringBuilder Logs;
         public String[] split2;
+        public String[] split1;
         //public int unmountresponse;
         //public Process MountImage;
 
@@ -91,7 +93,7 @@ namespace ISO_Mounter
                     ReadConfig = new StreamReader(Application.StartupPath + "\\" + "config.ini");
                     String FullConfig;
                     FullConfig = ReadConfig.ReadToEnd();
-                    String[] split1;
+                   
                     Char Seperation = '&';
                     split1 = FullConfig.Split(Seperation);
                     Char Seperation2 = ':';
@@ -430,9 +432,38 @@ namespace ISO_Mounter
                         Firsttext = Firsttext + split2[count] + ":";
                     }
                 }
-
-                        
+                Firsttext = Firsttext + "&" + split1[1];
+                StreamWriter ChangeConfig;
+                ChangeConfig = new StreamWriter(Application.StartupPath + "\\" + "config.ini");
+                ChangeConfig.Write(Firsttext);
+                ChangeConfig.Close();
+                RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                rk.SetValue("Free Image Mounter", Application.StartupPath + "\\" + "StartupMounter.exe");
+                RunOnStartup = "TRUE";
+                goto EndChangeConfig;      
             }
+            if (RunOnStartup.Contains("TRUE"))
+            {
+                String Firsttext;
+                Firsttext = "StartupEnabled=False:";
+                for (int count = 0; count < split2.Length + 1; count++)
+                {
+                    if (count > 0)
+                    {
+                        Firsttext = Firsttext + split2[count] + ":";
+                    }
+                }
+                Firsttext = Firsttext + "&" + split1[1];
+                StreamWriter ChangeConfig;
+                ChangeConfig = new StreamWriter(Application.StartupPath + "\\" + "config.ini");
+                ChangeConfig.Write(Firsttext);
+                ChangeConfig.Close();
+                RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                rk.DeleteValue("Free Image Mounter", false);
+                RunOnStartup = "FALSE";
+                goto EndChangeConfig;
+            }
+            EndChangeConfig:;
         }
     }
 }
