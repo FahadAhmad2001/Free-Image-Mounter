@@ -44,12 +44,12 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.button4 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -199,6 +199,16 @@
             this.tabPage2.UseVisualStyleBackColor = true;
             this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(13, 16);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(88, 35);
+            this.button4.TabIndex = 0;
+            this.button4.Text = "Running at startup";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.label5);
@@ -244,15 +254,6 @@
             // 
             this.timer1.Interval = 5000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(13, 16);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(88, 35);
-            this.button4.TabIndex = 0;
-            this.button4.Text = "Running at startup";
-            this.button4.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 

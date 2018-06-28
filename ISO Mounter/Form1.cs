@@ -25,10 +25,12 @@ namespace ISO_Mounter
         public String LogStatus;
         public string output1;
         public string error1;
+        public string RunOnStartup;
         public String AutoUpdate;
         public String CurrentVersion;
         public String CurrentVDate;
-        public StringBuilder Logs;
+        public static StringBuilder Logs;
+        public String[] split2;
         //public int unmountresponse;
         //public Process MountImage;
 
@@ -67,15 +69,51 @@ namespace ISO_Mounter
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(AppClosing);
             if (File.Exists(Application.StartupPath + "\\" + "log.txt"))
             {
                 File.Delete(Application.StartupPath + "\\" + "log.txt");
+            }
+            if (File.Exists(Application.StartupPath +"\\" + "exitlog.txt"))
+            {
+                File.Delete(Application.StartupPath + "\\" + "exitlog.txt");
             }
             richTextBox1.AppendText("------------Free Image Mounter------------");
             Logs = new StringBuilder();
             Logs.Append("------------Free Image Mounter------------");
             if (File.Exists(Application.StartupPath + "\\" + "version.txt"))
             {
+                if(File.Exists(Application.StartupPath + "\\" + "config.ini"))
+                {
+                    richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       config.ini is present");
+                    Logs.Append(Environment.NewLine + DateTime.Now + "       config.ini is present");
+                    StreamReader ReadConfig;
+                    ReadConfig = new StreamReader(Application.StartupPath + "\\" + "config.ini");
+                    String FullConfig;
+                    FullConfig = ReadConfig.ReadToEnd();
+                    String[] split1;
+                    Char Seperation = '&';
+                    split1 = FullConfig.Split(Seperation);
+                    Char Seperation2 = ':';
+                    //String[] split2;
+                    split2 = split1[0].Split(Seperation2);
+                    if (split2[0].Contains("True"))
+                    {
+                        RunOnStartup = "TRUE";
+                        button4.Text = "Dont run at startup";
+                    }
+                    if (split2[0].Contains("False"))
+                    {
+                        RunOnStartup = "FALSE";
+                        button4.Text = "Run at startup";
+                    }
+                }
+                else
+                {
+                    richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Error: cannot find config.ini");
+                    Logs.Append(Environment.NewLine + DateTime.Now + "       Error: cannot find config.ini");
+                    
+                }
                 richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       version.txt is present");
                 Logs.Append(Environment.NewLine + DateTime.Now + "       version.txt is present");
                 StreamReader CheckVersion;
@@ -189,6 +227,7 @@ namespace ISO_Mounter
             {
                 richTextBox1.AppendText(Environment.NewLine + DateTime.Now + "       Error: cannot find version.txt");
                 Logs.Append(Environment.NewLine + DateTime.Now + "       Error: cannot find version.txt");
+                EndStartup:;
                 MessageBox.Show("Some files cannot be found. The program may run without them however cannot be updated and logs might not work");
                 DialogResult UpdateResponse = MessageBox.Show("Would you like to download the newest version from online?", "Download latest version", MessageBoxButtons.YesNo);
 
@@ -359,15 +398,41 @@ namespace ISO_Mounter
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (LogStatus.Contains("true"))
-            {
-                File.AppendAllText(Application.StartupPath + "\\" + "log.txt", Logs.ToString());
-            }
+           // if (LogStatus.Contains("true"))
+           // {
+            //    File.AppendAllText(Application.StartupPath + "\\" + "log.txt", Logs.ToString());
+            //}
+            
+        }
+        static void AppClosing(object Sender, EventArgs e)
+        {
+            StreamWriter logwriter;
+            logwriter = new StreamWriter(Application.StartupPath + "\\" + "exitlog.txt");
+            logwriter.Write(Logs);
+            logwriter.Close();
         }
 
         private void tabPage2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (RunOnStartup.Contains("FALSE"))
+            {
+                String Firsttext;
+                Firsttext = "StartupEnabled=True:";
+                for (int count = 0; count < split2.Length +1; count++)
+                {
+                    if (count > 0)
+                    {
+                        Firsttext = Firsttext + split2[count] + ":";
+                    }
+                }
+
+                        
+            }
         }
     }
 }
