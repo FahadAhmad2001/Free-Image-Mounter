@@ -33,6 +33,8 @@ namespace ISO_Mounter
         public static StringBuilder Logs;
         public String[] split2;
         public String[] split1;
+        public String[] split3;
+        public String[] StartupImages;
         //public int unmountresponse;
         //public Process MountImage;
 
@@ -80,6 +82,20 @@ namespace ISO_Mounter
             {
                 File.Delete(Application.StartupPath + "\\" + "exitlog.txt");
             }
+            if (File.Exists(Application.StartupPath + "\\" + "startuplist.txt"))
+            {
+                Char splitter1 = '*';
+                StreamReader ReadStartup;
+                ReadStartup = new StreamReader(Application.StartupPath + "\\" + "startuplist.txt");
+                String StartupText;
+                StartupText = ReadStartup.ReadToEnd();
+                ReadStartup.Close();
+                StartupImages = StartupText.Split(splitter1);
+                for(int count = 0; count < StartupImages.Length; count++)
+                {
+                    dataGridView2.Rows.Add(StartupImages[count]);
+                }
+            }
             richTextBox1.AppendText("------------Free Image Mounter------------");
             Logs = new StringBuilder();
             Logs.Append("------------Free Image Mounter------------");
@@ -93,7 +109,7 @@ namespace ISO_Mounter
                     ReadConfig = new StreamReader(Application.StartupPath + "\\" + "config.ini");
                     String FullConfig;
                     FullConfig = ReadConfig.ReadToEnd();
-                   
+                    ReadConfig.Close();
                     Char Seperation = '&';
                     split1 = FullConfig.Split(Seperation);
                     Char Seperation2 = ':';
@@ -423,9 +439,10 @@ namespace ISO_Mounter
         {
             if (RunOnStartup.Contains("FALSE"))
             {
+                //MessageBox.Show("changing status enabling");
                 String Firsttext;
                 Firsttext = "StartupEnabled=True:";
-                for (int count = 0; count < split2.Length +1; count++)
+                for (int count = 0; count < split2.Length; count++)
                 {
                     if (count > 0)
                     {
@@ -437,16 +454,18 @@ namespace ISO_Mounter
                 ChangeConfig = new StreamWriter(Application.StartupPath + "\\" + "config.ini");
                 ChangeConfig.Write(Firsttext);
                 ChangeConfig.Close();
+                Char Quotes = '"';
                 RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                rk.SetValue("Free Image Mounter", Application.StartupPath + "\\" + "StartupMounter.exe");
+                rk.SetValue("Free Image Mounter", Quotes + Application.StartupPath + "\\" + "StartupMounter.exe" + Quotes);
                 RunOnStartup = "TRUE";
+                button4.Text = "Dont run at startup";
                 goto EndChangeConfig;      
             }
             if (RunOnStartup.Contains("TRUE"))
             {
                 String Firsttext;
                 Firsttext = "StartupEnabled=False:";
-                for (int count = 0; count < split2.Length + 1; count++)
+                for (int count = 0; count < split2.Length; count++)
                 {
                     if (count > 0)
                     {
@@ -461,9 +480,42 @@ namespace ISO_Mounter
                 RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 rk.DeleteValue("Free Image Mounter", false);
                 RunOnStartup = "FALSE";
+                button4.Text = "Run at startup";
                 goto EndChangeConfig;
             }
             EndChangeConfig:;
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DialogResult RemoveResponse = MessageBox.Show("Do you really want to remove the image from mounting at startup?", "Confirm removal", MessageBoxButtons.YesNoCancel);
+            if (RemoveResponse == DialogResult.Yes)
+            {
+                String NewMountImages;
+                String RemovalFile;
+                RemovalFile = dataGridView2.CurrentCell.Value.ToString();
+                NewMountImages = "";
+                Char Splitter2 = '*';
+                for (int count = 0; count < StartupImages.Length; count++)
+                {
+                    if (StartupImages[count] == RemovalFile)
+                    {
+
+                    }
+                    else
+                    {
+                        NewMountImages = NewMountImages + StartupImages[count] + Splitter2;
+                    }
+                }
+                NewMountImages.TrimEnd(Splitter2);
+                StreamWriter WriteStartupImages;
+                WriteStartupImages = new StreamWriter(Application.StartupPath + "\\" + "startuplist.txt");
+                WriteStartupImages.Write(NewMountImages);
+                WriteStartupImages.Close();
+                int removalIndex = dataGridView2.CurrentCell.RowIndex;
+                dataGridView2.Rows.RemoveAt(removalIndex);
+                MessageBox.Show("This changes at next system startup");
+            }
         }
     }
 }
