@@ -35,6 +35,7 @@ namespace ISO_Mounter
         public String[] split1;
         public String[] split3;
         public String[] StartupImages;
+        public String StartupImagesText;
         //public int unmountresponse;
         //public Process MountImage;
 
@@ -89,6 +90,7 @@ namespace ISO_Mounter
                 ReadStartup = new StreamReader(Application.StartupPath + "\\" + "startuplist.txt");
                 String StartupText;
                 StartupText = ReadStartup.ReadToEnd();
+                StartupImagesText = StartupText;
                 ReadStartup.Close();
                 StartupImages = StartupText.Split(splitter1);
                 for(int count = 0; count < StartupImages.Length; count++)
@@ -515,6 +517,23 @@ namespace ISO_Mounter
                 int removalIndex = dataGridView2.CurrentCell.RowIndex;
                 dataGridView2.Rows.RemoveAt(removalIndex);
                 MessageBox.Show("This changes at next system startup");
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                String StartupFileLocation;
+                StartupFileLocation = openFileDialog1.FileName;
+                dataGridView1.Rows.Add(StartupFileLocation);
+                String NewStartupText;
+                NewStartupText = StartupImagesText + '*' + StartupFileLocation;
+                StreamWriter ChangeStartupText;
+                ChangeStartupText = new StreamWriter(Application.StartupPath + "\\" + "startuplist.txt");
+                ChangeStartupText.Write(NewStartupText);
+                ChangeStartupText.Close();
+                MessageBox.Show("This changes from next system startup");
             }
         }
     }
